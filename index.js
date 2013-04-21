@@ -31,7 +31,7 @@ function analyseJs(content, file, fis){
     });
     //wrap
     var deps = file.requires.length ? '[\'' + file.requires.join("', '") + '\']' : '[]';
-    content = 'define(\'' + file.getId() + '\', ' + deps + ', function(require, exports, module){\n' + content + '});';
+    content = 'define(\'' + file.getId() + '\', ' + deps + ', function(require, exports, module){\n\n' + content + '\n\n});';
     return content;
 }
 
