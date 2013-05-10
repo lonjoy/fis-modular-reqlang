@@ -30,7 +30,7 @@ function analyseJs(content, file, conf){
         return m;
     });
     //wrap
-    if(conf.amd){
+    if(conf.wrap === 'amd'){
         var deps = file.requires.length ? '[\'' + file.requires.join("', '") + '\']' : '[]';
         content = 'define(\'' + file.getId() + '\', ' + deps + ', function(require, exports, module){\n\n' + content + '\n\n});';
     } else {
