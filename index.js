@@ -18,8 +18,8 @@ function normalize(str, defaultExt){
     return info.quote + rest + info.quote;
 }
 
-function analyseJs(content, file){
-    var reg = /"(?:[^\\"]|\\[\s\S])+"|'(?:[^\\']|\\[\s\S])+'|\/\/[\r\n]+|\/\*[\s\S]+?\*\/|\brequire\s*\(\s*("(?:[^\\"]|\\[\s\S])+"|'(?:[^\\']|\\[\s\S])+')\s*\)/g;
+function analyseJs(content, file, conf){
+    var reg = /"(?:[^\\"]|\\[\s\S])+"|'(?:[^\\']|\\[\s\S])+'|\brequire\s*\(\s*("(?:[^\\"]|\\[\s\S])+"|'(?:[^\\']|\\[\s\S])+')\s*\)/g;
     content = content.replace(reg, function(m, value){
         if(value){
             value = normalize(value, '.js');
@@ -30,13 +30,17 @@ function analyseJs(content, file){
         return m;
     });
     //wrap
-    var deps = file.requires.length ? '[\'' + file.requires.join("', '") + '\']' : '[]';
-    content = 'define(\'' + file.getId() + '\', ' + deps + ', function(require, exports, module){\n\n' + content + '\n\n});';
+    if(conf.amd){
+        var deps = file.requires.length ? '[\'' + file.requires.join("', '") + '\']' : '[]';
+        content = 'define(\'' + file.getId() + '\', ' + deps + ', function(require, exports, module){\n\n' + content + '\n\n});';
+    } else {
+        content = '(function(){\n\n' + content + '\n\n})();';
+    }
     return content;
 }
 
 function analyseCss(content, file){
-    var reg = /@require\s+('[^']+'|"[^"]+"|[^\s{}]+)[\s;]*/g;
+    var reg = /\brequire\s+('[^']+'|"[^"]+"|[^\s{}]+)[\s;]*/g;
     return content.replace(reg, function(m, value){
         value = normalize(value, '.css');
         var info = fis.uri.getId(value, file.dirname);
@@ -47,7 +51,7 @@ function analyseCss(content, file){
 
 module.exports = function(content, file, conf){
     if(file.rExt === '.js'){
-        return analyseJs(content, file);
+        return analyseJs(content, file, conf);
     } else if(file.rExt === '.css'){
         return analyseCss(content, file);
     }
