@@ -31,8 +31,9 @@ function analyseJs(content, file, conf){
     });
     //wrap
     if(conf.wrap === 'amd'){
-        var deps = file.requires.length ? '[\'' + file.requires.join("', '") + '\']' : '[]';
-        content = 'define(\'' + file.getId() + '\', ' + deps + ', function(require, exports, module){\n\n' + content + '\n\n});';
+//        var deps = file.requires.length ? '[\'' + file.requires.join("', '") + '\']' : '[]';
+//        content = 'define(\'' + file.getId() + '\', ' + deps + ', function(require, exports, module){\n\n' + content + '\n\n});';
+        content = 'define(\'' + file.getId() + '\', function(require, exports, module){\n\n' + content + '\n\n});';
     } else {
         content = '(function(){\n\n' + content + '\n\n})();';
     }
