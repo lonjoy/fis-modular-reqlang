@@ -5,24 +5,10 @@
 
 'use strict';
 
-function normalize(str, defaultExt){
-    var info = fis.util.stringQuote(str);
-    var rest = info.rest.trim();
-    var pathinfo = fis.util.ext(rest);
-    if(pathinfo.dirname == '' && pathinfo.filename.indexOf(':') === -1){
-        rest += ':' + rest;
-    }
-    if(pathinfo.ext == ''){
-        rest += defaultExt;
-    }
-    return info.quote + rest + info.quote;
-}
-
 function analyseJs(content, file, conf){
     var reg = /"(?:[^\\"\n\r\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|\brequire\s*\(\s*("(?:[^\\"\n\r\f]|\\[\s\S])+"|'(?:[^\\'\n\r\f]|\\[\s\S])+')\s*\)/g;
     content = content.replace(reg, function(m, value){
         if(value){
-            value = normalize(value, '.js');
             var info = fis.uri.getId(value, file.dirname);
             file.addRequire(info.id);
             m = 'require(' + info.quote + info.id + info.quote + ')';
@@ -43,7 +29,6 @@ function analyseJs(content, file, conf){
 function analyseCss(content, file){
     var reg = /\brequire\s+('[^']+'|"[^"]+"|[^\s{}]+)[\s;]*/g;
     return content.replace(reg, function(m, value){
-        value = normalize(value, '.css');
         var info = fis.uri.getId(value, file.dirname);
         file.addRequire(info.id);
         return '';
