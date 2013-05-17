@@ -19,7 +19,7 @@ function normalize(str, defaultExt){
 }
 
 function analyseJs(content, file, conf){
-    var reg = /"(?:[^\\"]|\\[\s\S])+"|'(?:[^\\']|\\[\s\S])+'|\brequire\s*\(\s*("(?:[^\\"]|\\[\s\S])+"|'(?:[^\\']|\\[\s\S])+')\s*\)/g;
+    var reg = /"(?:[^\\"\n\r\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|\brequire\s*\(\s*("(?:[^\\"\n\r\f]|\\[\s\S])+"|'(?:[^\\'\n\r\f]|\\[\s\S])+')\s*\)/g;
     content = content.replace(reg, function(m, value){
         if(value){
             value = normalize(value, '.js');
