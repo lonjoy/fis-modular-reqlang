@@ -49,10 +49,21 @@ function analyseCss(content, file){
     });
 }
 
+function analyseHtml(content, file){
+    var reg = /<!--require\[([^\]]+)\]-->/g;
+    return content.replace(reg, function(m, value){
+        var info = fis.uri.getId(value, file.dirname);
+        file.addRequire(info.id);
+        return '';
+    });
+}
+
 module.exports = function(content, file, conf){
     if(file.rExt === '.js'){
         return analyseJs(content, file, conf);
     } else if(file.rExt === '.css'){
         return analyseCss(content, file);
+    } else {
+        return analyseHtml(content, file);
     }
 };
