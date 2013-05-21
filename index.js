@@ -27,7 +27,7 @@ function analyseJs(content, file, conf){
 }
 
 function analyseCss(content, file){
-    var reg = /\brequire\s+('[^']+'|"[^"]+"|[^\s{}]+)[\s;]*/g;
+    var reg = /@?\brequire\s+('[^']+'|"[^"]+"|[^\s{}]+)[\s;]*/g;
     return content.replace(reg, function(m, value){
         var info = fis.uri.getId(value, file.dirname);
         file.addRequire(info.id);
